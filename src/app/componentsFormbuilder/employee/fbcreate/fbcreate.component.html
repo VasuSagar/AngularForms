@@ -14,7 +14,22 @@
         </span>    
 
     </div>
-    Email:<input type="text" class="form-control" formControlName="email">
+
+    <div class="form-group" [ngClass]="{'has-error':employeeForm.controls.email.errors 
+    && 
+    (employeeForm.controls.email.touched
+    || employeeForm.controls.email.dirty)}">
+
+        Email:<input type="text" class="form-control" formControlName="email">
+        <span class="help-box" *ngIf="employeeForm.controls.email.errors 
+                                        && 
+                                        (employeeForm.controls.email.touched
+                                        || employeeForm.controls.email.dirty)">
+            <span *ngIf="employeeForm.controls.email.errors.required">Enter Email</span>
+            <span *ngIf="employeeForm.controls.email.errors.email">Enter Email Correctly</span>
+        </span>  
+
+    </div>
     <div formGroupName="skills">
         Skill:<input type="text" class="form-control" placeholder="Name of Skill" formControlName="skillName">
         <input type="text" class="form-control" placeholder="Experience in years" formControlName="exp">
