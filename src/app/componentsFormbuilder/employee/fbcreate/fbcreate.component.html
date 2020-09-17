@@ -1,0 +1,60 @@
+<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+    
+    <div class="form-group" [ngClass]="{'has-error':employeeForm.controls.fullName.errors 
+                                                    && 
+                                                    (employeeForm.controls.fullName.touched
+                                                    || employeeForm.controls.fullName.dirty)}">
+        Full Name:<input type="text" class="form-control" formControlName="fullName">
+
+        <span class="help-box" *ngIf="employeeForm.controls.fullName.errors 
+                                        && 
+                                        (employeeForm.controls.fullName.touched
+                                        || employeeForm.controls.fullName.dirty)">
+            <span *ngIf="employeeForm.controls.fullName.errors.required">Enter Name</span>
+        </span>    
+
+    </div>
+    Email:<input type="text" class="form-control" formControlName="email">
+    <div formGroupName="skills">
+        Skill:<input type="text" class="form-control" placeholder="Name of Skill" formControlName="skillName">
+        <input type="text" class="form-control" placeholder="Experience in years" formControlName="exp">
+    
+        <br>
+    
+        Proficiency:&nbsp;
+                    <input type="radio" formControlName="prof" value="beginner" ><b>beginner</b>
+                    <input type="radio" formControlName="prof" value="intermediate"><b>intermediate</b>
+                    <input type="radio" formControlName="prof" value="advanced"><b>advanced</b>
+    </div>
+    
+    <br><br>
+    <div class="panel-footer">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-primary" type="button" (click)="onLoad()">Load</button>
+    </div>
+    
+    </form>
+    
+    
+    
+ <table>
+        <tr>
+           <th>FormGroup</th>
+           <th>FormControl(fullName)</th> 
+        </tr>
+        <tr>
+            <td>
+                touched:{{employeeForm.touched}}<br>
+                dirty:{{employeeForm.dirty}}<br>
+                valid:{{employeeForm.valid}}<br>
+                Form Values:{{employeeForm.value | json}}
+            </td>
+            <td>
+                touched:{{employeeForm.controls.fullName.touched}}<br>
+                dirty:{{employeeForm.controls.fullName.dirty}}<br>
+                valid:{{employeeForm.controls.fullName.valid}}<br>
+                Form Values:{{employeeForm.controls.fullName.value | json}}
+            </td>
+        </tr>
+    </table> 
+    
