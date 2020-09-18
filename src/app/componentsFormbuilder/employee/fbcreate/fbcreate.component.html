@@ -5,7 +5,7 @@
                                                     (employeeForm.controls.fullName.touched
                                                     || employeeForm.controls.fullName.dirty)}">
         Full Name:<input type="text" class="form-control" formControlName="fullName">
-        <label>{{fullNameLength}}</label>
+        
         <span class="help-block" *ngIf="employeeForm.controls.fullName.errors 
                                         && 
                                         (employeeForm.controls.fullName.touched
@@ -53,6 +53,7 @@
         <button class="btn btn-primary" type="button" (click)="disableAllFormsMethod()">Disable All Forms</button>
         <button class="btn btn-primary" type="button" (click)="printKeyValue()">Print keyvalue</button>
         <button class="btn btn-primary" type="button" (click)="markAsDirtyAllMethod()">Mark dirty</button>
+        <button class="btn btn-primary" type="button" (click)="onValidationClick()">Log validate</button>
     </div>
     
     </form>

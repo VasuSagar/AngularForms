@@ -5,7 +5,7 @@ import { Employee } from '../model/Employee';
   providedIn: 'root'
 })
 export class EmployeeService {
-  emp:Employee={fullName:"dhruv",email:"dhruv@gmail.com",skills:{skillName:"java",exp:5,prof:"beginner"}};
+  emp:Employee={fullName:"",email:"dhruv",skills:{skillName:"java",exp:5,prof:"beginner"}};
   updatedEmp={fullName:'gautam',skills:{skillName:"photo"}};
   constructor() { }
 

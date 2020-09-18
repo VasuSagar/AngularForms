@@ -10,18 +10,49 @@ import { EmployeeService } from 'src/app/services/employee.service';
 export class FBcreateComponent implements OnInit {
   
   constructor(private fb:FormBuilder,private employeeService:EmployeeService) { }
+
+
+  //error messages
+
+  formErrors={
+    'fullName':'',
+    'email':'',
+    'skillName':'',
+    'exp':'',
+    'prof':''
+  };
+
+  validationMessages={
+    'fullName':{
+      'required':'Full name is required',
+      'minlength':'Full name must be greater than 2 char',
+      'maxlength':"Full name must be less than 10 char"
+    },
+    'email':{
+      'required':'Email is required'
+    },
+    'skillName':{
+      'required':'Skill Name is required'
+    },
+    'exp':{
+      'required':'Experience is required'
+    },
+    'prof':{
+      'required':'Proficiency is required'
+    }
+  };
+
   employeeForm=this.fb.group({
     fullName:['',[Validators.required,Validators.minLength(2),Validators.maxLength(10)]],
     email:['',[Validators.email,Validators.required]],
     skills:this.fb.group({
-      skillName:[''],
-      exp:[''],
-      prof:['']
+      skillName:['',Validators.required],
+      exp:['',Validators.required],
+      prof:['',Validators.required]
     }),
 
   });
-
-  fullNameLength=0;
+  
 
   ngOnInit(): void 
   {
@@ -59,6 +90,12 @@ export class FBcreateComponent implements OnInit {
    //to update OR to Set only some of the form value use patchValue()
     //this.employeeForm.patchValue(this.employeeService.updateEmployee());
     // NOTE:We can also use patch value to update OR Load all the data
+  }
+
+  onValidationClick()
+  { 
+    this.logValidationErrors(this.employeeForm);
+    console.log(this.formErrors);
   }
 
   
@@ -138,12 +175,45 @@ export class FBcreateComponent implements OnInit {
     });
   }
 
+
+
   markAsDirtyAll(group:FormGroup)
   {
     Object.keys(group.controls).forEach((key:string)=>{
       const abstractControl=group.get(key);
         abstractControl.markAsDirty();
     });
+  }
+
+
+  
+  logValidationErrors(group:FormGroup)
+  { 
+    Object.keys(group.controls).forEach((key:string)=>{
+    const abstractControl=group.get(key);
+    if(abstractControl instanceof FormGroup)
+    {
+      this.logValidationErrors(abstractControl); 
+    }
+    else 
+    {
+      this.formErrors[key]='';
+      if(abstractControl && !abstractControl.valid)
+      {
+        const message=this.validationMessages[key];
+       // console.log(message);
+       // console.log(abstractControl.errors);
+        for(const errorKey in abstractControl.errors)
+        {
+          if(errorKey)
+          {
+            this.formErrors[key] += message[errorKey]+' '; 
+          }  
+        }
+      }
+    }
+    });
+
   }
 
 }
