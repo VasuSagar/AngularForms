@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { EmployeeService } from 'src/app/services/employee.service';
 
 @Component({
@@ -16,7 +16,10 @@ export class FBcreateComponent implements OnInit {
 
   formErrors={
     'fullName':'',
+    'emailGroup':'',
     'email':'',
+    'confirmEmail':'',
+    'phone':'',
     'skillName':'',
     'exp':'',
     'prof':''
@@ -30,7 +33,17 @@ export class FBcreateComponent implements OnInit {
     },
     'email':{
       'required':'Email is required',
-      'email':'Type Email Coorectly'
+      'emailDomain':'Type Email Coorectly with@docsvault.com'
+    },
+    'confirmEmail':{
+      'required':'Confirm Email is required',
+    },
+    'emailGroup':{
+      'emailMisMatch':"Mails should be same"
+    },
+    'phone':{
+      'required':'Phone is required',
+      'minlength':'Enter 10 digits'
     },
     'skillName':{
       'required':'Skill Name is required'
@@ -45,7 +58,13 @@ export class FBcreateComponent implements OnInit {
 
   employeeForm=this.fb.group({
     fullName:['',[Validators.required,Validators.minLength(2),Validators.maxLength(10)]],
-    email:['',[Validators.email,Validators.required]],
+    contactPreference:['email'],
+    emailGroup:this.fb.group({
+      email:['',[emailDomainparam('docsvault.com'),Validators.required]],
+      confirmEmail:['',Validators.required],
+    },{validators:matchEmail}),
+   
+    phone:[''],
     skills:this.fb.group({
       skillName:['',Validators.required],
       exp:['',Validators.required],
@@ -76,6 +95,31 @@ export class FBcreateComponent implements OnInit {
     this.employeeForm.valueChanges.subscribe((data)=>{
       this.logValidationErrors(this.employeeForm);
     });
+
+    this.employeeForm.controls.contactPreference.valueChanges.subscribe((data:string)=>{
+      this.onContactPreferenceChange(data);
+    });
+
+
+
+  }
+
+ 
+
+  onContactPreferenceChange(selectedValue:string)
+  {
+     const phoneControl=this.employeeForm.controls.phone;
+
+     if(selectedValue==='phone')
+     {
+       phoneControl.setValidators([Validators.required,Validators.minLength(10)]);
+     }
+     else
+     {
+       phoneControl.clearValidators();
+     }
+
+     phoneControl.updateValueAndValidity();
 
   }
 
@@ -197,13 +241,8 @@ export class FBcreateComponent implements OnInit {
   { 
     Object.keys(group.controls).forEach((key:string)=>{
     const abstractControl=group.get(key);
-    if(abstractControl instanceof FormGroup)
-    {
-      this.logValidationErrors(abstractControl); 
-    }
-    else 
-    {
-      this.formErrors[key]='';
+
+    this.formErrors[key]='';
       if(abstractControl && !abstractControl.valid && (abstractControl.dirty || abstractControl.touched))
       {
         const message=this.validationMessages[key];
@@ -217,9 +256,62 @@ export class FBcreateComponent implements OnInit {
           }  
         }
       }
+
+    if(abstractControl instanceof FormGroup)
+    {
+      this.logValidationErrors(abstractControl); 
     }
+    
     });
 
   }
 
+}
+
+function emailDomain(control:AbstractControl):{[key:string]:any} | null
+{
+  const email:string=control.value;
+  const domain=email.substring(email.lastIndexOf('@')+1);
+
+  if(email==='' || domain.toLowerCase()==='docsvault.com')
+  {
+    return null;
+  }
+  else{
+    return {'emailDomain':true};
+  }  
+}
+
+
+//below is parameterized custom function of email validation
+function emailDomainparam(domainName:string){
+  return (control:AbstractControl):{[key:string]:any} | null=>{
+  const email:string=control.value;
+  const domain=email.substring(email.lastIndexOf('@')+1);
+
+  if(email==='' || domain.toLowerCase()===domainName.toLowerCase())
+  {
+    return null;
+  }
+  else{
+    return {'emailDomain':true};
+  };  
+}
+}
+
+
+
+function matchEmail(group:AbstractControl):{[key:string]:any} | null
+{
+  const emailControl=group.get('email');
+  const confirmEmailControl=group.get('confirmEmail');
+  if(emailControl.value==confirmEmailControl.value
+    || confirmEmailControl.pristine)
+  {
+    return null;
+  }
+  else
+  {
+    return {'emailMisMatch':true};
+  }
 }
