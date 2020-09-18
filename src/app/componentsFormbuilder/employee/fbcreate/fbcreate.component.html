@@ -5,12 +5,14 @@
                                                     (employeeForm.controls.fullName.touched
                                                     || employeeForm.controls.fullName.dirty)}">
         Full Name:<input type="text" class="form-control" formControlName="fullName">
-
-        <span class="help-box" *ngIf="employeeForm.controls.fullName.errors 
+        <label>{{fullNameLength}}</label>
+        <span class="help-block" *ngIf="employeeForm.controls.fullName.errors 
                                         && 
                                         (employeeForm.controls.fullName.touched
                                         || employeeForm.controls.fullName.dirty)">
             <span *ngIf="employeeForm.controls.fullName.errors.required">Enter Name</span>
+            <span *ngIf="employeeForm.controls.fullName.errors.minlength || 
+            employeeForm.controls.fullName.errors.maxlength">Must be less than 10 & greater than 2</span>
         </span>    
 
     </div>
@@ -46,6 +48,11 @@
     <div class="panel-footer">
         <button class="btn btn-primary" type="submit">Save</button>
         <button class="btn btn-primary" type="button" (click)="onLoad()">Load</button>
+        <button class="btn btn-primary" type="button" (click)="disableFormControlMethod()">Disable FormControls</button>
+        <button class="btn btn-primary" type="button" (click)="disableFormGroupMethod()">Disable FormGroup</button>
+        <button class="btn btn-primary" type="button" (click)="disableAllFormsMethod()">Disable All Forms</button>
+        <button class="btn btn-primary" type="button" (click)="printKeyValue()">Print keyvalue</button>
+        <button class="btn btn-primary" type="button" (click)="markAsDirtyAllMethod()">Mark dirty</button>
     </div>
     
     </form>
@@ -67,6 +74,7 @@
             <td>
                 touched:{{employeeForm.controls.fullName.touched}}<br>
                 dirty:{{employeeForm.controls.fullName.dirty}}<br>
+                <!-- pristine:{{employeeForm.controls.fullName.pristine}}<br> -->
                 valid:{{employeeForm.controls.fullName.valid}}<br>
                 Form Values:{{employeeForm.controls.fullName.value | json}}
             </td>
