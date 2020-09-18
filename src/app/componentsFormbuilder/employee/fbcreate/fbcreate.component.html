@@ -1,98 +1,112 @@
 <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
-    
+
     <div class="form-group" [ngClass]="{'has-error':formErrors.fullName}">
-        Full Name:<input type="text" class="form-control" formControlName="fullName"
-                    (blur)="logValidationErrors()">
-        
+        Full Name:<input type="text" class="form-control" formControlName="fullName" (blur)="logValidationErrors()">
+
         <span class="help-block" *ngIf="formErrors.fullName">
             {{formErrors.fullName}}
-        </span>    
+        </span>
 
     </div>
 
-    <div class="form-group">   
+    <div class="form-group">
         Contact Preference:&nbsp;
-                    <input type="radio" formControlName="contactPreference" 
-                     value="email" 
-                    ><b>Email</b>
-                    <input type="radio" formControlName="contactPreference" 
-                    value="phone"
-                    ><b>Phone</b>
-        
-        </div> 
+        <input type="radio" formControlName="contactPreference" value="email"><b>Email</b>
+        <input type="radio" formControlName="contactPreference" value="phone"><b>Phone</b>
+
+    </div>
 
 
     <div formGroupName="emailGroup">
 
-    
+
 
         <div class="form-group" [ngClass]="{'has-error':formErrors.email}">
 
-            Email:<input type="text" class="form-control" formControlName="email"
-                    (blur)="logValidationErrors()">
+            Email:<input type="text" class="form-control" formControlName="email" (blur)="logValidationErrors()">
             <span class="help-box" *ngIf="formErrors.email">
                 {{formErrors.email}}
-            </span>  
+            </span>
 
         </div>
 
         <div class="form-group" [ngClass]="{'has-error':formErrors.confirmEmail || formErrors.emailGroup}">
 
             Confirm Email:<input type="text" class="form-control" formControlName="confirmEmail"
-                    (blur)="logValidationErrors()">
+                (blur)="logValidationErrors()">
             <span class="help-box" *ngIf="formErrors.confirmEmail || formErrors.emailGroup">
                 {{formErrors.confirmEmail ?formErrors.confirmEmail :formErrors.emailGroup}}
-                
-            </span>  
+
+            </span>
 
         </div>
     </div>
     <div class="form-group" [ngClass]="{'has-error':formErrors.phone}">
 
-        Phone No:<input type="text" class="form-control" formControlName="phone"
-                (blur)="logValidationErrors()">
+        Phone No:<input type="text" class="form-control" formControlName="phone" (blur)="logValidationErrors()">
         <span class="help-box" *ngIf="formErrors.phone">
             {{formErrors.phone}}
-        </span>  
+        </span>
 
     </div>
 
+    <div class="well">
+        <div>
+            <button type="button" class="btn btn-primary" (click)="addSkillButtonClick()"
+                        [disabled]="employeeForm.get('skills').invalid">Add Skill</button>
+        </div>
 
-
-    <div formGroupName="skills">
+        <div formArrayName="skills" *ngFor="let skill of employeeForm.get('skills')['controls'];
+                                let i=index">
         
-        Skill:
-            <div class="form-group" [ngClass]="{'has-error':formErrors.skillName}">
-            <input type="text" class="form-control" placeholder="Name of Skill" formControlName="skillName"
-                (blur)="logValidationErrors()">
-            <span class="help-box" *ngIf="formErrors.skillName">
-                {{formErrors.skillName}}
-            </span>  
-            </div> 
-            
-            <div class="form-group" [ngClass]="{'has-error':formErrors.exp}">
-                <input type="text" class="form-control" placeholder="Experience in years" formControlName="exp"
-                (blur)="logValidationErrors()">
-                <span class="help-box" *ngIf="formErrors.exp">
-                    {{formErrors.exp}}
-                </span>  
-            </div>
-        <br>
+        <hr *ngIf="i>0" >                               
+            <div [formGroupName]="i">
 
-        <div class="form-group" [ngClass]="{'has-error':formErrors.prof}">   
-        Proficiency:&nbsp;
-                    <input type="radio" formControlName="prof" value="beginner" 
-                    (blur)="logValidationErrors()"><b>beginner</b>
+                Skill:
+                <div class="form-group" [ngClass]="{'has-error':skill.controls.skillName.invalid &&
+                                                skill.controls.skillName.touched}">
+                    <input type="text" class="form-control" placeholder="Name of Skill" formControlName="skillName">
+                    <span class="help-box" *ngIf="skill.get('skillName').errors?.required &&
+                                            skill.get('skillName').touched">
+                        Skill Name is required
+                    </span>
+                    <div class="col-sm-12" *ngIf="employeeForm.get('skills').length>1">
+                        <button type="button" class="btn btn-danger btn-sm pull-right"
+                            title="Delete Skills"
+                            (click)="removeSkillButtonClick(i)">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group" [ngClass]="{'has-error':skill.controls.exp.invalid &&
+                skill.controls.exp.touched}">
+                    <input type="text" class="form-control" placeholder="Experience in years" formControlName="exp"
+                        >
+                    <span class="help-box" *ngIf="skill.get('exp').errors?.required &&
+                    skill.get('exp').touched">
+                        Experience is required
+                    </span>
+                </div>
+                <br>
+
+                <div class="form-group" [ngClass]="{'has-error':skill.controls.prof.invalid &&
+                                                skill.controls.prof.touched}">
+                    Proficiency:&nbsp;
+                    <input type="radio" formControlName="prof" value="beginner"
+                        ><b>beginner</b>
                     <input type="radio" formControlName="prof" value="intermediate"
-                    (blur)="logValidationErrors()"><b>intermediate</b>
+                        ><b>intermediate</b>
                     <input type="radio" formControlName="prof" value="advanced"
-                    (blur)="logValidationErrors()"><b>advanced</b>
-            <span class="help-box" *ngIf="formErrors.prof">
-                    {{formErrors.prof}}
-            </span> 
-        </div>             
+                        ><b>advanced</b>
+                    <span class="help-box" *ngIf="skill.get('prof').errors?.required &&
+                    skill.get('prof').touched">
+                        Select Proficiency
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
-    
     <br><br>
     <div class="panel-footer">
         <button class="btn btn-primary" type="submit">Save</button>
@@ -104,30 +118,29 @@
         <button class="btn btn-primary" type="button" (click)="markAsDirtyAllMethod()">Mark dirty</button>
         <button class="btn btn-primary" type="button" (click)="onValidationClick()">Log validate</button>
     </div>
-    
-    </form>
-    
-    
-    
- <table>
-        <tr>
-           <th>FormGroup</th>
-           <th>FormControl(fullName)</th> 
-        </tr>
-        <tr>
-            <td>
-                touched:{{employeeForm.touched}}<br>
-                dirty:{{employeeForm.dirty}}<br>
-                valid:{{employeeForm.valid}}<br>
-                Form Values:{{employeeForm.value | json}}
-            </td>
-            <td>
-                touched:{{employeeForm.controls.fullName.touched}}<br>
-                dirty:{{employeeForm.controls.fullName.dirty}}<br>
-                <!-- pristine:{{employeeForm.controls.fullName.pristine}}<br> -->
-                valid:{{employeeForm.controls.fullName.valid}}<br>
-                Form Values:{{employeeForm.controls.fullName.value | json}}
-            </td>
-        </tr>
-    </table> 
-    
+
+</form>
+
+
+
+<table>
+    <tr>
+        <th>FormGroup</th>
+        <th>FormControl(fullName)</th>
+    </tr>
+    <tr>
+        <td>
+            touched:{{employeeForm.touched}}<br>
+            dirty:{{employeeForm.dirty}}<br>
+            valid:{{employeeForm.valid}}<br>
+            Form Values:{{employeeForm.value | json}}
+        </td>
+        <td>
+            touched:{{employeeForm.controls.fullName.touched}}<br>
+            dirty:{{employeeForm.controls.fullName.dirty}}<br>
+            <!-- pristine:{{employeeForm.controls.fullName.pristine}}<br> -->
+            valid:{{employeeForm.controls.fullName.valid}}<br>
+            Form Values:{{employeeForm.controls.fullName.value | json}}
+        </td>
+    </tr>
+</table>

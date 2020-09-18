@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, Form, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { EmployeeService } from 'src/app/services/employee.service';
 
 @Component({
@@ -14,16 +14,7 @@ export class FBcreateComponent implements OnInit {
 
   //error messages
 
-  formErrors={
-    'fullName':'',
-    'emailGroup':'',
-    'email':'',
-    'confirmEmail':'',
-    'phone':'',
-    'skillName':'',
-    'exp':'',
-    'prof':''
-  };
+  formErrors={};
 
   validationMessages={
     'fullName':{
@@ -44,15 +35,6 @@ export class FBcreateComponent implements OnInit {
     'phone':{
       'required':'Phone is required',
       'minlength':'Enter 10 digits'
-    },
-    'skillName':{
-      'required':'Skill Name is required'
-    },
-    'exp':{
-      'required':'Experience is required'
-    },
-    'prof':{
-      'required':'Proficiency is required'
     }
   };
 
@@ -65,14 +47,26 @@ export class FBcreateComponent implements OnInit {
     },{validators:matchEmail}),
    
     phone:[''],
-    skills:this.fb.group({
-      skillName:['',Validators.required],
-      exp:['',Validators.required],
-      prof:['',Validators.required]
-    }),
+    skills:this.fb.array([
+      this.addSkillFormGroup()
+    ]),
 
   });
   
+
+  addSkillFormGroup():FormGroup
+  {
+    return this.fb.group({
+      skillName:['',Validators.required],
+      exp:['',Validators.required],
+      prof:['',Validators.required]
+    })
+  }
+
+  addSkillButtonClick()
+  {
+    (<FormArray>this.employeeForm.get('skills')).push(this.addSkillFormGroup());
+  }
 
   ngOnInit(): void 
   {
@@ -109,10 +103,14 @@ export class FBcreateComponent implements OnInit {
   onContactPreferenceChange(selectedValue:string)
   {
      const phoneControl=this.employeeForm.controls.phone;
-
+  //  const emailControl=this.employeeForm.controls.emailGroup;
+  //  console.log(emailControl);
      if(selectedValue==='phone')
      {
        phoneControl.setValidators([Validators.required,Validators.minLength(10)]);
+     // emailControl.get('email').clearValidators();
+     //  emailControl.get('confirmEmail').clearValidators();
+     //  console.log(emailControl);
      }
      else
      {
@@ -261,9 +259,14 @@ export class FBcreateComponent implements OnInit {
     {
       this.logValidationErrors(abstractControl); 
     }
-    
+ 
     });
 
+  }
+
+  removeSkillButtonClick(skillGroupIndex:number)
+  {
+    (<FormArray>this.employeeForm.controls.skills).removeAt(skillGroupIndex);
   }
 
 }
