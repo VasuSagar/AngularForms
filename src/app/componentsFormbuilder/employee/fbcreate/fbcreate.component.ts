@@ -29,7 +29,8 @@ export class FBcreateComponent implements OnInit {
       'maxlength':"Full name must be less than 10 char"
     },
     'email':{
-      'required':'Email is required'
+      'required':'Email is required',
+      'email':'Type Email Coorectly'
     },
     'skillName':{
       'required':'Skill Name is required'
@@ -70,6 +71,11 @@ export class FBcreateComponent implements OnInit {
     //     console.log(value);
     //   });
 
+
+
+    this.employeeForm.valueChanges.subscribe((data)=>{
+      this.logValidationErrors(this.employeeForm);
+    });
 
   }
 
@@ -187,7 +193,7 @@ export class FBcreateComponent implements OnInit {
 
 
   
-  logValidationErrors(group:FormGroup)
+  logValidationErrors(group:FormGroup=this.employeeForm)
   { 
     Object.keys(group.controls).forEach((key:string)=>{
     const abstractControl=group.get(key);
@@ -198,7 +204,7 @@ export class FBcreateComponent implements OnInit {
     else 
     {
       this.formErrors[key]='';
-      if(abstractControl && !abstractControl.valid)
+      if(abstractControl && !abstractControl.valid && (abstractControl.dirty || abstractControl.touched))
       {
         const message=this.validationMessages[key];
        // console.log(message);

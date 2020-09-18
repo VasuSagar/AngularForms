@@ -1,47 +1,56 @@
 <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
     
-    <div class="form-group" [ngClass]="{'has-error':employeeForm.controls.fullName.errors 
-                                                    && 
-                                                    (employeeForm.controls.fullName.touched
-                                                    || employeeForm.controls.fullName.dirty)}">
-        Full Name:<input type="text" class="form-control" formControlName="fullName">
+    <div class="form-group" [ngClass]="{'has-error':formErrors.fullName}">
+        Full Name:<input type="text" class="form-control" formControlName="fullName"
+                    (blur)="logValidationErrors()">
         
-        <span class="help-block" *ngIf="employeeForm.controls.fullName.errors 
-                                        && 
-                                        (employeeForm.controls.fullName.touched
-                                        || employeeForm.controls.fullName.dirty)">
-            <span *ngIf="employeeForm.controls.fullName.errors.required">Enter Name</span>
-            <span *ngIf="employeeForm.controls.fullName.errors.minlength || 
-            employeeForm.controls.fullName.errors.maxlength">Must be less than 10 & greater than 2</span>
+        <span class="help-block" *ngIf="formErrors.fullName">
+            {{formErrors.fullName}}
         </span>    
 
     </div>
 
-    <div class="form-group" [ngClass]="{'has-error':employeeForm.controls.email.errors 
-    && 
-    (employeeForm.controls.email.touched
-    || employeeForm.controls.email.dirty)}">
+    <div class="form-group" [ngClass]="{'has-error':formErrors.email}">
 
-        Email:<input type="text" class="form-control" formControlName="email">
-        <span class="help-box" *ngIf="employeeForm.controls.email.errors 
-                                        && 
-                                        (employeeForm.controls.email.touched
-                                        || employeeForm.controls.email.dirty)">
-            <span *ngIf="employeeForm.controls.email.errors.required">Enter Email</span>
-            <span *ngIf="employeeForm.controls.email.errors.email">Enter Email Correctly</span>
+        Email:<input type="text" class="form-control" formControlName="email"
+                (blur)="logValidationErrors()">
+        <span class="help-box" *ngIf="formErrors.email">
+            {{formErrors.email}}
         </span>  
 
     </div>
     <div formGroupName="skills">
-        Skill:<input type="text" class="form-control" placeholder="Name of Skill" formControlName="skillName">
-        <input type="text" class="form-control" placeholder="Experience in years" formControlName="exp">
-    
+        
+        Skill:
+            <div class="form-group" [ngClass]="{'has-error':formErrors.skillName}">
+            <input type="text" class="form-control" placeholder="Name of Skill" formControlName="skillName"
+                (blur)="logValidationErrors()">
+            <span class="help-box" *ngIf="formErrors.skillName">
+                {{formErrors.skillName}}
+            </span>  
+            </div> 
+            
+            <div class="form-group" [ngClass]="{'has-error':formErrors.exp}">
+                <input type="text" class="form-control" placeholder="Experience in years" formControlName="exp"
+                (blur)="logValidationErrors()">
+                <span class="help-box" *ngIf="formErrors.exp">
+                    {{formErrors.exp}}
+                </span>  
+            </div>
         <br>
-    
+
+        <div class="form-group" [ngClass]="{'has-error':formErrors.prof}">   
         Proficiency:&nbsp;
-                    <input type="radio" formControlName="prof" value="beginner" ><b>beginner</b>
-                    <input type="radio" formControlName="prof" value="intermediate"><b>intermediate</b>
-                    <input type="radio" formControlName="prof" value="advanced"><b>advanced</b>
+                    <input type="radio" formControlName="prof" value="beginner" 
+                    (blur)="logValidationErrors()"><b>beginner</b>
+                    <input type="radio" formControlName="prof" value="intermediate"
+                    (blur)="logValidationErrors()"><b>intermediate</b>
+                    <input type="radio" formControlName="prof" value="advanced"
+                    (blur)="logValidationErrors()"><b>advanced</b>
+            <span class="help-box" *ngIf="formErrors.prof">
+                    {{formErrors.prof}}
+            </span> 
+        </div>             
     </div>
     
     <br><br>
